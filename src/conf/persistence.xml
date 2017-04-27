@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="ServeurPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>org.creasig.inspire.ThemeISO</class>
+    <class>org.creasig.inspire.ThemeInspire</class>
+    <class>org.creasig.inspire.Regions</class>
+    <class>org.creasig.inspire.Departements</class>
+    <class>org.creasig.inspire.RestrictionInspire</class>
+    <class>org.creasig.inspire.ContrainteLegale</class>
+    <class>org.creasig.inspire.ContraintesSecurite</class>
+    <class>org.creasig.inspire.ConditionUtilisation</class>
+    <class>org.creasig.inspire.Communes</class>
+    <class>org.creasig.inspire.Projection</class>
+    <class>org.creasig.inspire.CategorieISO</class>
+    <class>org.creasig.inspire.RepresentationSpatiale</class>
+    <class>org.creasig.inspire.Encodage</class>
+    <class>org.creasig.inspire.Langues</class>
+    <class>org.creasig.inspire.Sequence</class>
+    <class>org.creasig.inspire.Donnee</class>
+    <class>org.creasig.inspire.Contacts</class>
+    <class>org.creasig.inspire.RessourceConforme</class>
+    <class>org.creasig.inspire.TypeRessource</class>
+    <class>org.creasig.inspire.CoherenceTopologique</class>
+    <class>org.creasig.inspire.Serveur</class>
+    <class>org.creasig.inspire.Colonnes</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/catalogue"/>
+      <property name="javax.persistence.jdbc.password" value="postgres"/>
+      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="postgres"/>
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+</persistence>

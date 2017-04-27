@@ -1,0 +1,504 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"  >
+    <h:head>
+        <title>#{msg['gestioncontacts']}</title>
+    </h:head>
+    <h:body>
+        <ui:include src="/theme/menu.xhtml"/>
+        <div class="contenu">
+
+            <h:form id="formtableau">
+                <p:dataTable  id="tableau" var="donnee" value="#{donneeFace.donnees}" filteredValue="#{donneeFace.valeursfiltres}" paginator="true" rows="30" sortBy="${donneeFace.intitule}" widgetVar="vartableau">
+                    <p:column headerText="id" sortBy="#{donnee.id}" filterBy="#{donnee.id}" rendered="false">
+                        <h:outputText value="${donnee.id}" id="globalFilter" />
+                    </p:column>
+                    <p:column headerText="#{msg['intitule']}" sortBy="#{donnee.intitule}" filterBy="#{donnee.intitule}">
+                        <h:outputText value="${donnee.intitule}" />
+                    </p:column>
+                    <p:column headerText="#{msg['nomtable']}" sortBy="#{donnee.nomtable}" filterBy="#{donnee.nomtable}">
+                        <h:outputText value="${donnee.nomtable}"/>
+                    </p:column>
+                    <p:column headerText="#{msg['serveur']}" sortBy="${donnee.serveur.nom}" filterBy="${donnee.serveur.nom}">
+                        <f:facet name="filter">
+                            <p:selectOneMenu label="Filtrer par" onchange="PF('vartableau').filter()" panelStyle="width:125px">
+                                <f:selectItem itemLabel="Filtrer par" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{donneeFace.nomserveurs}" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="${donnee.serveur.nom}"/>
+                    </p:column>
+                    <p:column id="ressoucecolonne" headerText="#{msg['ressourceconforme']}" sortBy="${donnee.ressourceconforme.nom}" filterBy="${donnee.ressourceconforme.nom}" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu label="Filtrer par" onchange="PF('vartableau').filter()" panelStyle="width:125px">
+                                <f:selectItem itemLabel="Filtrer par" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{donneeFace.ressourcesconforme}" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="${donnee.ressourceconforme.nom}" />
+                    </p:column>
+
+                    <p:column headerText="">
+                        <p:commandButton value="#{msg['modifier']}" oncomplete="PF('modifier').show();" update=":formulaire" action="#{donneeFace.chargerserveur}" styleClass="ui-priority-primary" >
+                            <f:param name="id" value="#{donnee.id}" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="">
+                        <p:commandButton value="#{msg['supprimer']}" update=":formtableau:tableau" actionListener="#{donneeFace.supprimer}" styleClass="ui-priority-primary" >
+                            <f:param name="id" value="#{donnee.id}" />
+                            <p:confirm header="#{msg['confirmation']}" message="#{msg['estsur']}" icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="#{msg['oui']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="#{msg['non']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-check" />
+                        </p:confirmDialog>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <h:form  id="formulaire">
+                <p:scrollPanel>
+                    <p:dialog style="max-height:90%;max-width:90%;overflow:auto" header="#{contactsFace.descriptionaction}" widgetVar="modifier" minHeight="50" id="dialogue">
+                        <f:facet name="header">
+                            <h:outputText value="#{contactsFace.descriptionaction}"/>
+                        </f:facet>
+                        <p:inputText type="hidden" value="#{donneeFace.id}"/>
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column>
+                                    <h:outputText value="Intitulé :"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="intitule" value="#{donneeFace.intitule}" required="true">
+                                        <f:validateLength minimum="2" maximum="250" />
+                                        <p:ajax event="keyup" update="intitulemessage"/>
+                                    </p:inputText>
+                                </p:column>
+                                <p:column>
+                                    <p:message display="icon" for="intitule" id="intitulemessage"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Résumé de la ressource
+                                </p:column>
+                                <p:column>
+                                    <h:inputTextarea cols="60" rows="10" value="#{donneeFace.resume}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Nom de la table
+                                </p:column>
+                                <p:column>
+                                    <h:inputText value="#{donneeFace.nomtable}" readonly="true"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Catégorie thématique
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.cattheme1}" >
+
+                                        <f:selectItems value="#{donneeFace.categories}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.cattheme2}">
+
+                                        <f:selectItems value="#{donneeFace.categories}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.cattheme3}">
+
+                                        <f:selectItems value="#{donneeFace.categories}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Thème INSPIRE
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.themeinspire}">
+                                        <f:selectItems value="#{donneeFace.themesInspire}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column>
+                                    Région
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.region}" >
+                                        <f:selectItems value="#{donneeFace.regions}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Département
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.departement}">
+                                        <f:selectItems value="#{donneeFace.departements}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Commune
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel for="dd" />
+                                    <p:autoComplete 
+                                        id="dd" 
+                                        value="#{donneeFace.commune}" 
+                                        completeMethod="#{donneeFace.getCommunes}"
+
+
+                                        minQueryLength="1" 
+                                        dropdown="true"> 
+                                    </p:autoComplete>
+
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Lat N / S
+                                </p:column>
+                                <p:column>
+                                    <h:inputText value="#{donneeFace.latn}"/>
+                                    /
+                                    <h:inputText value="#{donneeFace.lats}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Long O / E
+                                </p:column>
+                                <p:column>
+                                    <h:inputText value="#{donneeFace.lato}"/>
+                                    /
+                                    <h:inputText value="#{donneeFace.late}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Date de la ressource (création): 
+                                </p:column>
+                                <p:column>
+                                    <p:calendar value="#{donneeFace.datecreation}" showOn="button" locale="fr" lang="fr" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Date de la ressource (publication): 
+                                </p:column>
+                                <p:column>
+                                    <p:calendar value="#{donneeFace.datepublication}" showOn="button" locale="fr" lang="fr" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Date de la ressource (dernière révision):  
+                                </p:column>
+                                <p:column>
+                                    <p:calendar value="#{donneeFace.datederniererevision}" showOn="button" locale="fr" lang="fr" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Etendue temporelle :        (début)  
+                                </p:column>
+                                <p:column>
+                                    <p:calendar value="#{donneeFace.etenduemin}" showOn="button" locale="fr" lang="fr" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Etendue temporelle :        (Fin)  
+                                </p:column>
+                                <p:column>
+                                    <p:calendar value="#{donneeFace.etenduemax}" showOn="button" locale="fr" lang="fr" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    *Généalogie de la ressource
+                                </p:column>
+                                <p:column>
+                                    <h:inputTextarea cols="60" rows="10" value="#{donneeFace.genealogieressource}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    *Contact sur les métadonnées
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.contactmetadonnee}">
+                                        <f:selectItems value="#{donneeFace.contacts}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Responsable de la ressource
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.responsableressource}">
+                                        <f:selectItems value="#{donneeFace.contacts}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Restrictions d'accès public au sens d'INSPIRE
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.restrictionsinspire}">
+                                        <f:selectItems value="#{donneeFace.restrictionInspire}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Valeurs autorisées mais insuffisant à établir la base légale des limitations d'accès public
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.contraintelegale}">
+                                        <f:selectItems value="#{donneeFace.contrainteLegale}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    contraintes de sécurité
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.contraintesecurite}">
+                                        <f:selectItems value="#{donneeFace.contrainteSecurite}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Conditions applicables à l'accès et à l'utilisation de la ressource :
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.conditionacces}">
+                                        <f:selectItems value="#{donneeFace.conditionsUtilisation}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Mots-clés décrivant la ressource
+                                </p:column>
+                                <p:column>
+                                    <h:inputTextarea cols="60" rows="10" value="#{donneeFace.motscle}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">Accès à la ressource</p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:panelGrid>
+                                        <p:row>
+                                            <p:column></p:column>
+                                            <p:column>Adresse URL</p:column>
+                                            <p:column>Nom</p:column>
+                                        </p:row>
+                                        <p:row>
+                                            <p:column>Lien Internet</p:column>
+                                            <p:column><h:inputText value="#{donneeFace.adresseinternet}"/></p:column>
+                                            <p:column><h:inputText value="#{donneeFace.nominternet}"/></p:column>
+                                        </p:row>
+                                        <p:row>
+                                            <p:column>Lien vers service de visualisation</p:column>
+                                            <p:column><h:inputText value="#{donneeFace.adressevisualisation}"/></p:column>
+                                            <p:column><h:inputText value="#{donneeFace.nomvisualisation}"/></p:column>
+                                        </p:row>
+                                        <p:row>
+                                            <p:column>Lien vers le téléchargement</p:column>
+                                            <p:column><h:inputText value="#{donneeFace.adressetelechargement}"/></p:column>
+                                            <p:column><h:inputText value="#{donneeFace.nomtelechargement}"/></p:column>
+                                        </p:row>
+                                    </p:panelGrid>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Langue des métadonnées  :
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.languemetadonnee}">
+                                        <f:selectItems value="#{donneeFace.langues}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column>
+                                    Type de ressource :
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.typeressource}">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems value="#{donneeFace.typesRessource}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Limite d'utilisation des métadonnées :
+                                </p:column>
+                                <p:column>
+                                    <p:inputText value="#{donneeFace.limiteutilisation}"/>
+
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Langue décrivant la ressource :
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.languedescription}">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems value="#{donneeFace.langues}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Jeu de caractères de la ressource :
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.jeucaractere}">
+                                        <f:selectItems value="#{donneeFace.encodages}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Type de représentation spatiale : 
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.representationspatiale}">
+                                        <f:selectItems value="#{donneeFace.representationsSpaciale}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Référentiel de coordonnées :
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.refcoordonnee}">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems value="#{donneeFace.projections}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Système de référence temporelle :
+                                </p:column>
+                                <p:column>
+                                    <h:inputText value="#{donneeFace.referencetemporelle}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Cohérence topologique :
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.coherencetopologique}">
+                                        <f:selectItems value="#{donneeFace.coherencesTopologique}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Résolution indiquée en echelle : 1/
+                                </p:column>
+                                <p:column>
+                                    <h:inputText value="#{donneeFace.echelle}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    OU Résolution indiquée en taille de pixels (mètres) :
+                                </p:column>
+                                <p:column>
+                                    <h:inputText value="#{donneeFace.resolution}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Autre contact sur la ressource
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.autrecontact}">
+                                        <f:selectItems value="#{donneeFace.contacts}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Titre de la spécification :
+                                </p:column>
+                                <p:column>
+                                    <h:inputTextarea cols="60" rows="10" value="#{donneeFace.titrespec}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    Date de publication : 
+                                </p:column>
+                                <p:column>
+                                    <p:calendar value="#{donneeFace.datedebutpublication}" showOn="button" locale="fr" lang="fr" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>La ressource est-elle conforme à la spécification? :</p:column>
+                                <p:column>
+                                    <p:selectOneMenu value="#{donneeFace.ressourceconforme}">
+                                        <f:selectItems value="#{donneeFace.ressourcesConforme}" var="s" itemValue="#{s.id}" itemLabel="#{s.nom}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:commandButton validateClient="true" value="#{donneeFace.action}" update=":formtableau:tableau,:formulaire" actionListener="#{donneeFace.modifier}" oncomplete="PF('modifier').hide();" icon="ui-icon-check" />
+                                </p:column>
+                                <p:column>
+
+                                </p:column>
+                            </p:row>
+
+                        </p:panelGrid>
+                    </p:dialog>
+                </p:scrollPanel>
+            </h:form>
+        </div>
+    </h:body>
+</html>
+

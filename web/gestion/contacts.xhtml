@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"  >
+    <h:head>
+        <title>#{msg['gestioncontacts']}</title>
+    </h:head>
+    <h:body>
+        <ui:include src="/theme/menu.xhtml"/>
+        <div class="contenu">
+
+            <h:form id="formtableau">
+                <p:commandButton value="#{msg['ajouter']}" oncomplete="PF('ajouter').show();" action="#{contactsFace.viderformulaire}" update=":formulaire">
+                </p:commandButton>
+                <p:dataTable id="tableau" var="contact" value="#{contactsFace.contacts}" >
+                    <p:column headerText="#{msg['nom']}">
+                        <h:outputText value="#{contact.nom}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['organisme']}">
+                        <h:outputText value="#{contact.organisme}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['adresse']}">
+                        <h:outputText value="#{contact.adresse}" />
+                    </p:column>
+                    <p:column headerText="#{msg['ville']}">
+                        <h:outputText value="#{contact.ville}" />
+                    </p:column>
+                    <p:column headerText="#{msg['cp']}">
+                        <h:outputText value="#{contact.cp}" />
+                    </p:column>
+                    <p:column headerText="#{msg['email']}">
+                        <h:outputText value="#{contact.email}" />
+                    </p:column>
+                    <p:column headerText="">
+                        <p:commandButton value="#{msg['modifier']}" oncomplete="PF('ajouter').show();" update=":formulaire" action="#{contactsFace.charger}" styleClass="ui-priority-primary" >
+                            <f:param name="id" value="#{contact.id}" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="">
+                        <p:commandButton value="#{msg['supprimer']}" update=":formtableau:tableau" actionListener="#{contactsFace.supprimer}" styleClass="ui-priority-primary" >
+                            <f:param name="id" value="#{contact.id}" />
+                            <p:confirm header="#{msg['confirmation']}" message="#{msg['estsur']}" icon="ui-icon-alert"/>
+                        </p:commandButton>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="#{msg['oui']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="#{msg['non']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-check" />
+                        </p:confirmDialog>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <h:form  id="formulaire">
+                <p:dialog header="#{contactsFace.descriptionaction}" widgetVar="ajouter" minHeight="50" id="dialogue">
+                    <f:facet name="header">
+                        <h:outputText value="#{contactsFace.descriptionaction}"/>
+                    </f:facet>
+                    <p:panelGrid columns="3">
+                        <h:outputText value="#{msg['nom']} :"/>
+                        <p:inputText id="nom" value="#{contactsFace.nom}" required="true">
+                            <f:validateLength minimum="2" maximum="250" />
+                            <p:ajax event="keyup" update="nommessage"/>
+
+                        </p:inputText>
+                        <p:message display="icon" for="nom" id="nommessage"/>
+
+                        <h:outputText value="#{msg['organisme']} :"/>
+                        <p:inputText id="organisme" value="#{contactsFace.organisme}" required="true">
+                            <p:ajax event="keyup" update="organismemessage"/>
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:inputText>
+                        <p:message display="icon" for="organisme" id="organismemessage"/>
+
+                        <h:outputText value="#{msg['adresse']} :"/>
+                        <p:inputText id="adresse" value="#{contactsFace.adresse}" required="true">
+                            <p:ajax event="keyup" update="adressemessage"/>
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:inputText>
+                        <p:message display="icon" for="adresse" id="adressemessage"/>
+
+                        <h:outputText value="#{msg['cp']} :"/>
+                        <p:inputText id="cp" value="#{contactsFace.cp}" required="true">
+                            <p:ajax event="keyup" update="cpmessage"/>
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:inputText>
+                        <p:message display="icon" for="cp" id="cpmessage"/>
+
+                        <h:outputText value="#{msg['ville']} :"/>
+                        <p:inputText id="ville" value="#{contactsFace.ville}" required="true">
+                            <p:ajax event="keyup" update="villemessage"/>
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:inputText>
+                        <p:message display="icon" for="ville" id="villemessage"/>
+
+                        <h:outputText value="#{msg['email']} :"/>
+                        <p:inputText id="email" value="#{contactsFace.email}" required="true">
+                            <p:ajax event="keyup" update="emailmessage"/>
+
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:inputText>
+                        <p:message display="icon" for="email" id="emailmessage"/>
+
+                        <p:commandButton validateClient="true" value="#{contactsFace.action}" update=":formtableau:tableau,:formulaire" actionListener="#{contactsFace.ajouter}" oncomplete="PF('ajouter').hide();" icon="ui-icon-check" />
+
+                    </p:panelGrid>
+                </p:dialog>
+            </h:form>
+        </div>
+    </h:body>
+</html>
+

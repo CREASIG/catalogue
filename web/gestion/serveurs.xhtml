@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"  >
+    <h:head>
+        <title>#{msg['gestionserveurs']}</title>
+    </h:head>
+    <h:body>
+        <ui:include src="/theme/menu.xhtml"/>
+        <div class="contenu">
+
+            <h:form id="formtableau">
+                <p:commandButton value="#{msg['ajouter']}" oncomplete="PF('ajouter').show();" action="#{serveurFace.viderformulaire}" update=":formulaire">
+                </p:commandButton>
+                <p:dataTable id="tableau" var="serveur" value="#{serveurFace.serveurs}" >
+                    <p:column headerText="#{msg['nom']}">
+                        <h:outputText value="#{serveur.nom}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['hote']}">
+                        <h:outputText value="#{serveur.adresse}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['port']}">
+                        <h:outputText value="#{serveur.port}" />
+                    </p:column>
+                    <p:column headerText="#{msg['bdd']}">
+                        <h:outputText value="#{serveur.bdd}" />
+                    </p:column>
+                    <p:column headerText="#{msg['utilisateur']}">
+                        <h:outputText value="#{serveur.utilisateur}" />
+                    </p:column>
+                    <p:column headerText="">
+                        <p:commandButton value="#{msg['modifier']}" oncomplete="PF('ajouter').show();" update=":formulaire" action="#{serveurFace.chargerserveur}" styleClass="ui-priority-primary" >
+                            <f:param name="id" value="#{serveur.id}" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="">
+                        <p:commandButton value="#{msg['supprimer']}" update=":formtableau:tableau" actionListener="#{serveurFace.supprimer}" styleClass="ui-priority-primary" >
+                            <f:param name="id" value="#{serveur.id}" />
+                            <p:confirm header="#{msg['confirmation']}" message="#{msg['estsur']}" icon="ui-icon-alert"/>
+                        </p:commandButton>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="#{msg['oui']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="#{msg['non']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-check" />
+                        </p:confirmDialog>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <h:form  id="formulaire">
+                <p:dialog header="#{serveurFace.descriptionaction}" widgetVar="ajouter" minHeight="50" id="dialogue">
+                    <f:facet name="header">
+                        <h:outputText value="#{serveurFace.descriptionaction}"/>
+                    </f:facet>
+                    <p:panelGrid columns="3">
+                        <h:outputText value="#{msg['nom']} :"/>
+                        <p:inputText id="nom" value="#{serveurFace.nom}" required="true">
+                            <f:validateLength minimum="2" maximum="250" />
+                            <p:ajax event="keyup" update="nommessage"/>
+
+                        </p:inputText>
+                        <p:message display="icon" for="nom" id="nommessage"/>
+
+                        <h:outputText value="#{msg['hote']} :"/>
+                        <p:inputText id="adresse" value="#{serveurFace.adresse}" required="true">
+                            <p:ajax event="keyup" update="adressemessage"/>
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:inputText>
+                        <p:message display="icon" for="adresse" id="adressemessage"/>
+
+                        <h:outputText value="#{msg['port']} :"/>
+                        <p:inputText id="port" value="#{serveurFace.port}" required="true">
+                            <p:ajax event="keyup" update="portmessage"/>
+                            <f:validateDoubleRange maximum="99999" minimum="0"/>
+                        </p:inputText>
+                        <p:message display="icon" for="port" id="portmessage"/>
+
+                        <h:outputText value="#{msg['bdd']} :"/>
+                        <p:inputText id="bdd" value="#{serveurFace.bdd}" required="true">
+                            <p:ajax event="keyup" update="bddmessage"/>
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:inputText>
+                        <p:message display="icon" for="bdd" id="bddmessage"/>
+
+                        <h:outputText value="#{msg['utilisateur']} :"/>
+                        <p:inputText id="utilisateur" value="#{serveurFace.utilisateur}" required="true">
+                            <p:ajax event="keyup" update="utilisateurmessage"/>
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:inputText>
+                        <p:message display="icon" for="utilisateur" id="utilisateurmessage"/>
+
+                        <h:outputText value="#{msg['passe']} :"/>
+                        <p:password id="passe" value="#{serveurFace.passe}" required="true">
+                            <p:ajax event="keyup" update="passemessage"/>
+                            <f:validateLength minimum="2" maximum="250" />
+                        </p:password>
+                        <p:message display="icon" for="passe" id="passemessage"/>
+
+                        <p:commandButton validateClient="true" value="#{serveurFace.action}" update=":formtableau:tableau,:formulaire" actionListener="#{serveurFace.ajouter}" oncomplete="PF('ajouter').hide();" icon="ui-icon-check" />
+
+                    </p:panelGrid>
+                </p:dialog>
+            </h:form>
+        </div>
+    </h:body>
+</html>
+
