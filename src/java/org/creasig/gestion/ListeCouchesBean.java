@@ -106,7 +106,7 @@ public class ListeCouchesBean implements Serializable {
                     donnee.setColonnes(listecolonnes);
                     new GestionDonnees().modifier(donnee);
                 }
-
+                try{
                 result = state.executeQuery("select oid,relname, geography_columns.* from pg_class, geography_columns where relname= geography_columns.f_table_name");
 
                 while (result.next()) {
@@ -156,7 +156,10 @@ public class ListeCouchesBean implements Serializable {
                     }
                     new GestionDonnees().modifier(donnee);
 
+                        
+                        }
                 }
+                catch(Exception e){}
 
             } catch (SQLException e) {
                 addMessage("impossible de se connecter au serveur " + serveur.getNom() + "\n" + e.getMessage());
