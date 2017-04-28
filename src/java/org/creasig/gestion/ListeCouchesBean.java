@@ -98,7 +98,7 @@ public class ListeCouchesBean implements Serializable {
                         }
                         //if (c.getIdunique() == 156) 
                         {
-                            System.out.println(c);
+                            //System.out.println(c);
                         }
                         listecolonnes.add(c);
                     }
@@ -106,60 +106,59 @@ public class ListeCouchesBean implements Serializable {
                     donnee.setColonnes(listecolonnes);
                     new GestionDonnees().modifier(donnee);
                 }
-                try{
-                result = state.executeQuery("select oid,relname, geography_columns.* from pg_class, geography_columns where relname= geography_columns.f_table_name");
+                try {
+                    result = state.executeQuery("select oid,relname, geography_columns.* from pg_class, geography_columns where relname= geography_columns.f_table_name");
 
-                while (result.next()) {
-                    GestionDonnees d = new GestionDonnees();
-                    Donnee donnee = d.ajouter(serveur.getId(), result.getObject("f_table_name").toString(), result.getInt("oid"));
-                    donnee.setRefcoordonnees(new Projection(Integer.parseInt(result.getObject("srid").toString())));
+                    while (result.next()) {
+                        GestionDonnees d = new GestionDonnees();
+                        Donnee donnee = d.ajouter(serveur.getId(), result.getObject("f_table_name").toString(), result.getInt("oid"));
+                        donnee.setRefcoordonnees(new Projection(Integer.parseInt(result.getObject("srid").toString())));
 
-                    ResultSet result1 = state1.executeQuery("SELECT min(ST_XMin(geometry(" + result.getObject("f_geography_column").toString() + "))) xmin, max(ST_XMax(geometry(" + result.getObject("f_geography_column").toString() + "))) xmax, min(ST_YMin(geometry(" + result.getObject("f_geography_column").toString() + "))) ymin, max(ST_YMax(geometry(" + result.getObject("f_geography_column").toString() + "))) ymax FROM " + result.getObject("f_table_schema").toString() + "." + result.getObject("f_table_name").toString() + ";");
-                    if (result1.next()) {
-                        donnee.setLato(result1.getFloat("xmin"));
-                        donnee.setLate(result1.getFloat("xmax"));
-                        donnee.setLatn(result1.getFloat("ymax"));
-                        donnee.setLats(result1.getFloat("ymin"));
-                        List<Departements> listedep = em.createNamedQuery("Departements.findDepartement").
-                                setParameter("xmin", result1.getFloat("xmin")).
-                                setParameter("xmax", result1.getFloat("xmax")).
-                                setParameter("ymin", result1.getFloat("ymin")).
-                                setParameter("ymax", result1.getFloat("ymax")).
-                                getResultList();
-                        if (listedep.size() >= 1) {
-                            donnee.setDepartement(new Departements(listedep.get(0).getId()));
+                        ResultSet result1 = state1.executeQuery("SELECT min(ST_XMin(geometry(" + result.getObject("f_geography_column").toString() + "))) xmin, max(ST_XMax(geometry(" + result.getObject("f_geography_column").toString() + "))) xmax, min(ST_YMin(geometry(" + result.getObject("f_geography_column").toString() + "))) ymin, max(ST_YMax(geometry(" + result.getObject("f_geography_column").toString() + "))) ymax FROM " + result.getObject("f_table_schema").toString() + "." + result.getObject("f_table_name").toString() + ";");
+                        if (result1.next()) {
+                            donnee.setLato(result1.getFloat("xmin"));
+                            donnee.setLate(result1.getFloat("xmax"));
+                            donnee.setLatn(result1.getFloat("ymax"));
+                            donnee.setLats(result1.getFloat("ymin"));
+                            List<Departements> listedep = em.createNamedQuery("Departements.findDepartement").
+                                    setParameter("xmin", result1.getFloat("xmin")).
+                                    setParameter("xmax", result1.getFloat("xmax")).
+                                    setParameter("ymin", result1.getFloat("ymin")).
+                                    setParameter("ymax", result1.getFloat("ymax")).
+                                    getResultList();
+                            if (listedep.size() >= 1) {
+                                donnee.setDepartement(new Departements(listedep.get(0).getId()));
+                            }
+
+                            List<Regions> listereg = em.createNamedQuery("Regions.findRegion").
+                                    setParameter("xmin", result1.getFloat("xmin")).
+                                    setParameter("xmax", result1.getFloat("xmax")).
+                                    setParameter("ymin", result1.getFloat("ymin")).
+                                    setParameter("ymax", result1.getFloat("ymax")).
+                                    getResultList();
+                            if (listereg.size() >= 1) {
+                                donnee.setRegion(new Regions(listereg.get(0).getId()));
+                            }
+
+                            List<Communes> listecomm = em.createNamedQuery("Communes.findCommune").
+                                    setParameter("xmin", result1.getFloat("xmin")).
+                                    setParameter("xmax", result1.getFloat("xmax")).
+                                    setParameter("ymin", result1.getFloat("ymin")).
+                                    setParameter("ymax", result1.getFloat("ymax")).
+                                    getResultList();
+
+                            if (listecomm.size() >= 1) {
+                                Communes c = new Communes();
+                                c.setId(listecomm.get(0).getId());
+                                c.setNom(listecomm.get(0).getNom());
+                                donnee.setCommune(c);
+                            }
                         }
+                        new GestionDonnees().modifier(donnee);
 
-                        List<Regions> listereg = em.createNamedQuery("Regions.findRegion").
-                                setParameter("xmin", result1.getFloat("xmin")).
-                                setParameter("xmax", result1.getFloat("xmax")).
-                                setParameter("ymin", result1.getFloat("ymin")).
-                                setParameter("ymax", result1.getFloat("ymax")).
-                                getResultList();
-                        if (listereg.size() >= 1) {
-                            donnee.setRegion(new Regions(listereg.get(0).getId()));
-                        }
-
-                        List<Communes> listecomm = em.createNamedQuery("Communes.findCommune").
-                                setParameter("xmin", result1.getFloat("xmin")).
-                                setParameter("xmax", result1.getFloat("xmax")).
-                                setParameter("ymin", result1.getFloat("ymin")).
-                                setParameter("ymax", result1.getFloat("ymax")).
-                                getResultList();
-
-                        if (listecomm.size() >= 1) {
-                            Communes c = new Communes();
-                            c.setId(listecomm.get(0).getId());
-                            c.setNom(listecomm.get(0).getNom());
-                            donnee.setCommune(c);
-                        }
                     }
-                    new GestionDonnees().modifier(donnee);
-
-                        
-                        }
+                } catch (Exception e) {
                 }
-                catch(Exception e){}
 
             } catch (SQLException e) {
                 addMessage("impossible de se connecter au serveur " + serveur.getNom() + "\n" + e.getMessage());
