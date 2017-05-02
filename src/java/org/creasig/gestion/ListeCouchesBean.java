@@ -77,7 +77,7 @@ public class ListeCouchesBean implements Serializable {
                 while (result.next()) {
                     Donnee donnee = new GestionDonnees().ajouter(serveur.getId(), result.getObject("tablename").toString(), result.getInt("oid"));
 
-                    ResultSet result2 = state1.executeQuery("select attname as nom,atttypid as oid,data_type as type from pg_attribute,information_schema.columns where attrelid='" + donnee.getIdtable() + "' and attnum >0 and table_name='" + donnee.getNomtable() + "' and attname=column_name;");
+                    ResultSet result2 = state1.executeQuery("select attname as nom,attnum as oid,data_type as type from pg_attribute,information_schema.columns where attrelid='" + donnee.getIdtable() + "' and attnum >0 and table_name='" + donnee.getNomtable() + "' and attname=column_name;");
                     //System.err.println("select attname as nom,atttypid as oid,data_type as type from pg_attribute,information_schema.columns where attrelid='" + donnee.getIdtable() + "' and attnum >0 and table_name='" + donnee.getNomtable() + "' and attname=column_name;");
                     Collection<Colonnes> listecolonnes = new ArrayList<>();
 
@@ -89,11 +89,13 @@ public class ListeCouchesBean implements Serializable {
                         c.setType(result2.getString("type"));
                         c.setIdDonnee(donnee);
 //Récupération de la description de la colonne
-                        for (Iterator<Colonnes> iterator = donnee.getColonnes().iterator(); iterator.hasNext();) {
-                            Colonnes next = iterator.next();
-                            if (c.getIdunique().equals(next.getIdunique())) {
-                                c.setDescription(next.getDescription());
-                                c.setId(next.getId());
+                        if (donnee.getColonnes() != null) {
+                            for (Iterator<Colonnes> iterator = donnee.getColonnes().iterator(); iterator.hasNext();) {
+                                Colonnes next = iterator.next();
+                                if (c.getIdunique().equals(next.getIdunique())) {
+                                    c.setDescription(next.getDescription());
+                                    c.setId(next.getId());
+                                }
                             }
                         }
                         //if (c.getIdunique() == 156) 

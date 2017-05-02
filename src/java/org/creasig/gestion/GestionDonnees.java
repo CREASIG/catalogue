@@ -167,25 +167,20 @@ public class GestionDonnees {
         s.setTitrespec(donnee.getTitrespec());
         s.setDatedebutpublication(donnee.getDatedebutpublication());
         s.setRessourceconforme(donnee.getRessourceconforme());
-        System.err.println("6");
         Collection<Colonnes> listecolonnes = em.createNamedQuery("Colonnes.findByIdTable").setParameter("iddonnee", donnee.getIdtable()).getResultList();
-        System.err.println(listecolonnes.size());
 
         // mise à jour des colonnes existante
         for (Iterator<Colonnes> iteratororigine = listecolonnes.iterator(); iteratororigine.hasNext();) {
             Colonnes origine = iteratororigine.next();
-            System.err.println(origine.getNom());
             boolean trouve = false;
             for (Iterator<Colonnes> iterator = donnee.getColonnes().iterator(); iterator.hasNext();) {
                 Colonnes maj = iterator.next();
-                if (origine.getIdDonnee().getId() == maj.getIdDonnee().getId() && origine.getIdunique() == maj.getIdunique()) {
+                if (origine.getIdDonnee().getId().equals(maj.getIdDonnee().getId()) && origine.getIdunique().equals(maj.getIdunique())) {
                     origine.setNom(maj.getNom());
                     origine.setDescription(maj.getDescription());
                     trouve = true;
-                    System.err.println("trouve " + origine);
                 }
                 if (!trouve) {
-                    System.out.println("ajout de " + origine);
                     em.remove(origine);
                 }
             }
@@ -195,20 +190,23 @@ public class GestionDonnees {
         for (Iterator<Colonnes> iterator = donnee.getColonnes().iterator(); iterator.hasNext();) {
             Colonnes maj = iterator.next();
             boolean trouve = false;
-            for (Iterator<Colonnes> iteratororigine = listecolonnes.iterator(); iteratororigine.hasNext();) {
-                Colonnes origine = iteratororigine.next();
-                if (origine.getIdDonnee().getId() == maj.getIdDonnee().getId() && origine.getIdunique() == maj.getIdunique()) {
-                    trouve = true;
+            if (!listecolonnes.isEmpty()) {
+                for (Iterator<Colonnes> iteratororigine = listecolonnes.iterator(); iteratororigine.hasNext();) {
+                    Colonnes origine = iteratororigine.next();
+                    if (origine.getIdDonnee().getId().equals(maj.getIdDonnee().getId()) && origine.getIdunique().equals(maj.getIdunique())) {
+                        trouve = true;
+                    }
+                    if (!trouve) {
+                        em.persist(maj);
+                    }
                 }
-                if (!trouve) {
-                    System.out.println("suppression de " + maj);
-                    em.persist(maj);
-                }
+            } else {
+                em.persist(maj);
             }
         }
-
         em.flush();
-        em.getTransaction().commit();
+        em.getTransaction()
+                .commit();
     }
 
     public List<RessourceConforme> getRessourcesConforme() {
