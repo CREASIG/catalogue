@@ -82,12 +82,13 @@ public class Donnee implements Serializable {
     @Column(name = "lato")
     private float lato;
 
-    @OneToMany(mappedBy = "iddonnee",cascade = {CascadeType.ALL},fetch = FetchType.EAGER,targetEntity = Colonnes.class)
+    
+    @OneToMany(mappedBy = "iddonnee",cascade = CascadeType.ALL,fetch =  FetchType.EAGER,targetEntity = Colonnes.class)
     private Collection<Colonnes> colonnes;
 
     private static final long serialVersionUID = 2L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private Integer id;
