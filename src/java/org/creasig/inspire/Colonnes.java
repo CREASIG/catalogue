@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Colonnes.findAll", query = "SELECT c FROM Colonnes c")
     , @NamedQuery(name = "Colonnes.findById", query = "SELECT c FROM Colonnes c WHERE c.id = :id")
+    , @NamedQuery(name = "Colonnes.findByIdTable", query = "SELECT c FROM Colonnes c WHERE c.iddonnee.idtable = :iddonnee")
     , @NamedQuery(name = "Colonnes.findByIdunique", query = "SELECT c FROM Colonnes c WHERE c.idunique = :idunique")
     , @NamedQuery(name = "Colonnes.findByNom", query = "SELECT c FROM Colonnes c WHERE c.nom = :nom")
     , @NamedQuery(name = "Colonnes.findByDescription", query = "SELECT c FROM Colonnes c WHERE c.description = :description")})
@@ -39,7 +40,7 @@ public class Colonnes implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
+    @Column(name = "id", updatable = true, insertable = true)
     private Integer id;
     @Column(name = "idunique")
     private Integer idunique;
@@ -52,7 +53,7 @@ public class Colonnes implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "description")
     private String description;
-    @JoinColumn(name = "iddonnee", referencedColumnName = "id")
+    @JoinColumn(name = "iddonnee", referencedColumnName = "id", insertable = true, updatable = true)
     @ManyToOne()
     private Donnee iddonnee;
 
@@ -133,7 +134,7 @@ public class Colonnes implements Serializable {
 
     @Override
     public String toString() {
-        return "org.creasig.inspire.Colonnes[ id=" + id + "; nom="+nom+"; type="+type+"; description="+description+"; idunique="+idunique+" ]";
+        return "org.creasig.inspire.Colonnes[ id=" + id + "; iddonnee =" + iddonnee.getId() + "nom=" + nom + "; type=" + type + "; description=" + description + "; idunique=" + idunique + " ]";
     }
-    
+
 }
