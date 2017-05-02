@@ -267,6 +267,7 @@ public class DonneeFace implements Serializable {
 
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String id = params.get("id");
+        System.err.println("identifiant = "+id);
         Donnee s = (new GestionDonnees()).getDonnee(id);
         this.id = s.getId().toString();
         this.intitule = s.getIntitule();

@@ -78,7 +78,7 @@ public class ListeCouchesBean implements Serializable {
                     Donnee donnee = new GestionDonnees().ajouter(serveur.getId(), result.getObject("tablename").toString(), result.getInt("oid"));
 
                     ResultSet result2 = state1.executeQuery("select attname as nom,attnum as oid,data_type as type from pg_attribute,information_schema.columns where attrelid='" + donnee.getIdtable() + "' and attnum >0 and table_name='" + donnee.getNomtable() + "' and attname=column_name;");
-                    //System.err.println("select attname as nom,atttypid as oid,data_type as type from pg_attribute,information_schema.columns where attrelid='" + donnee.getIdtable() + "' and attnum >0 and table_name='" + donnee.getNomtable() + "' and attname=column_name;");
+                    System.err.println("select attname as nom,atttypid as oid,data_type as type from pg_attribute,information_schema.columns where attrelid='" + donnee.getIdtable() + "' and attnum >0 and table_name='" + donnee.getNomtable() + "' and attname=column_name;");
                     Collection<Colonnes> listecolonnes = new ArrayList<>();
 
                     while (result2.next()) {
@@ -108,15 +108,18 @@ public class ListeCouchesBean implements Serializable {
                     donnee.setColonnes(listecolonnes);
                     new GestionDonnees().modifier(donnee);
                 }
+                System.err.println("phase 2 deb");
                 try {
-                    result = state.executeQuery("select oid,relname, geography_columns.* from pg_class, geography_columns where relname= geography_columns.f_table_name");
+                    //result = state.executeQuery("select oid,relname, geography_columns.* from pg_class, geography_columns where relname= geography_columns.f_table_name");
+                    result = state.executeQuery("select oid,relname, geometry_columns.* from pg_class, geometry_columns where relname= geometry_columns.f_table_name");
 
                     while (result.next()) {
                         GestionDonnees d = new GestionDonnees();
                         Donnee donnee = d.ajouter(serveur.getId(), result.getObject("f_table_name").toString(), result.getInt("oid"));
                         donnee.setRefcoordonnees(new Projection(Integer.parseInt(result.getObject("srid").toString())));
 
-                        ResultSet result1 = state1.executeQuery("SELECT min(ST_XMin(geometry(" + result.getObject("f_geography_column").toString() + "))) xmin, max(ST_XMax(geometry(" + result.getObject("f_geography_column").toString() + "))) xmax, min(ST_YMin(geometry(" + result.getObject("f_geography_column").toString() + "))) ymin, max(ST_YMax(geometry(" + result.getObject("f_geography_column").toString() + "))) ymax FROM " + result.getObject("f_table_schema").toString() + "." + result.getObject("f_table_name").toString() + ";");
+                        ResultSet result1 = state1.executeQuery("SELECT min(ST_XMin(geometry(" + result.getObject("f_geometry_column").toString() + "))) xmin, max(ST_XMax(geometry(" + result.getObject("f_geometry_column").toString() + "))) xmax, min(ST_YMin(geometry(" + result.getObject("f_geometry_column").toString() + "))) ymin, max(ST_YMax(geometry(" + result.getObject("f_geometry_column").toString() + "))) ymax FROM " + result.getObject("f_table_schema").toString() + "." + result.getObject("f_table_name").toString() + ";");
+                //        System.err.println("SELECT min(ST_XMin(geometry(" + result.getObject("f_geography_column").toString() + "))) xmin, max(ST_XMax(geometry(" + result.getObject("f_geography_column").toString() + "))) xmax, min(ST_YMin(geometry(" + result.getObject("f_geography_column").toString() + "))) ymin, max(ST_YMax(geometry(" + result.getObject("f_geography_column").toString() + "))) ymax FROM " + result.getObject("f_table_schema").toString() + "." + result.getObject("f_table_name").toString() + ";");
                         if (result1.next()) {
                             donnee.setLato(result1.getFloat("xmin"));
                             donnee.setLate(result1.getFloat("xmax"));
@@ -161,6 +164,7 @@ public class ListeCouchesBean implements Serializable {
                     }
                 } catch (Exception e) {
                 }
+                System.err.println("phase 2 fin");
 
             } catch (SQLException e) {
                 addMessage("impossible de se connecter au serveur " + serveur.getNom() + "\n" + e.getMessage());
