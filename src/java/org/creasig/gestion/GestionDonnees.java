@@ -5,8 +5,11 @@
  */
 package org.creasig.gestion;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import org.creasig.inspire.Serveur;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.EntityManager;
@@ -15,6 +18,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import org.creasig.inspire.CategorieISO;
 import org.creasig.inspire.CoherenceTopologique;
+import org.creasig.inspire.Colonnes;
 import org.creasig.inspire.Communes;
 import org.creasig.inspire.ConditionUtilisation;
 import org.creasig.inspire.Contacts;
@@ -50,7 +54,7 @@ public class GestionDonnees {
 
     }
 
-    public Donnee ajouter(int idserveur, String nomtable,int idtable) {
+    public Donnee ajouter(int idserveur, String nomtable, int idtable) {
 
         em.getTransaction().begin();
 
@@ -81,7 +85,7 @@ public class GestionDonnees {
             d.setDatedebutpublication(new Date());
             d.setDatederniererevision(new Date());
             d.setDatepublication(new Date());
-            
+
             d.setRestrictionsinspire(new RestrictionInspire(1));
             d.setContraintelegale(new ContrainteLegale(1));
             d.setTyperessource(new TypeRessource(1));
@@ -91,7 +95,7 @@ public class GestionDonnees {
             d.setRessourceconforme(new RessourceConforme(1));
             d.setRefcoordonnees(new Projection(1));
             d.setContraintesecurite(new ContraintesSecurite(1));
-            
+
             em.persist(d);
             em.getTransaction().commit();
             return d;
@@ -108,7 +112,7 @@ public class GestionDonnees {
 //        s.setIdtable(donnee.getIdtable());
         s.setNomtable(donnee.getNomtable());
         s.setResume(donnee.getResume());
-        s.setColonnes(donnee.getColonnes());
+
         s.setCattheme1(donnee.getCattheme1());
         s.setCattheme2(donnee.getCattheme2());
         s.setCattheme3(donnee.getCattheme3());
@@ -116,11 +120,16 @@ public class GestionDonnees {
         s.setDepartement(donnee.getDepartement());
         s.setRegion(donnee.getRegion());
 //        s.setCommune(donnee.getCommune());
-        if ( Objects.isNull(donnee.getCommune() ) || Objects.isNull(donnee.getCommune().getNom()) || donnee.getCommune().getNom().equals("")) {
+        System.err.println(donnee.getCommune());
+        if (Objects.isNull(donnee.getCommune()) || Objects.isNull(donnee.getCommune().getNom()) || donnee.getCommune().getNom().trim().equals("")) {
             s.setCommune(null);
         } else {
-            s.setCommune((Communes) em.createNamedQuery("Communes.findByNom").setParameter("nom", donnee.getCommune().getNom()).getResultList().get(0));
+            List<Communes> c = em.createNamedQuery("Communes.findByNom").setParameter("nom", donnee.getCommune().getNom()).getResultList();
+            if (c.size() > 0) {
+                s.setCommune(c.get(0));
+            }
         }
+
         s.setLatn(donnee.getLatn());
         s.setLats(donnee.getLats());
         s.setLate(donnee.getLate());
@@ -158,6 +167,45 @@ public class GestionDonnees {
         s.setTitrespec(donnee.getTitrespec());
         s.setDatedebutpublication(donnee.getDatedebutpublication());
         s.setRessourceconforme(donnee.getRessourceconforme());
+        System.err.println("6");
+        Collection<Colonnes> listecolonnes = em.createNamedQuery("Colonnes.findByIdTable").setParameter("iddonnee", donnee.getIdtable()).getResultList();
+        System.err.println(listecolonnes.size());
+
+        // mise à jour des colonnes existante
+        for (Iterator<Colonnes> iteratororigine = listecolonnes.iterator(); iteratororigine.hasNext();) {
+            Colonnes origine = iteratororigine.next();
+            System.err.println(origine.getNom());
+            boolean trouve = false;
+            for (Iterator<Colonnes> iterator = donnee.getColonnes().iterator(); iterator.hasNext();) {
+                Colonnes maj = iterator.next();
+                if (origine.getIdDonnee().getId() == maj.getIdDonnee().getId() && origine.getIdunique() == maj.getIdunique()) {
+                    origine.setNom(maj.getNom());
+                    origine.setDescription(maj.getDescription());
+                    trouve = true;
+                    System.err.println("trouve " + origine);
+                }
+                if (!trouve) {
+                    System.out.println("ajout de " + origine);
+                    em.remove(origine);
+                }
+            }
+        }
+
+        //Ajout des nouvelles colonnes
+        for (Iterator<Colonnes> iterator = donnee.getColonnes().iterator(); iterator.hasNext();) {
+            Colonnes maj = iterator.next();
+            boolean trouve = false;
+            for (Iterator<Colonnes> iteratororigine = listecolonnes.iterator(); iteratororigine.hasNext();) {
+                Colonnes origine = iteratororigine.next();
+                if (origine.getIdDonnee().getId() == maj.getIdDonnee().getId() && origine.getIdunique() == maj.getIdunique()) {
+                    trouve = true;
+                }
+                if (!trouve) {
+                    System.out.println("suppression de " + maj);
+                    em.persist(maj);
+                }
+            }
+        }
 
         em.flush();
         em.getTransaction().commit();
@@ -254,6 +302,5 @@ public class GestionDonnees {
     public List<CoherenceTopologique> getCoherencesTopologique() {
         return em.createNamedQuery("CoherenceTopologique.findAll").getResultList();
     }
-
 
 }
