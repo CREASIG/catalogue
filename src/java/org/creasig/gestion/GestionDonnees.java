@@ -120,7 +120,6 @@ public class GestionDonnees {
         s.setDepartement(donnee.getDepartement());
         s.setRegion(donnee.getRegion());
 //        s.setCommune(donnee.getCommune());
-        System.err.println(donnee.getCommune());
         if (Objects.isNull(donnee.getCommune()) || Objects.isNull(donnee.getCommune().getNom()) || donnee.getCommune().getNom().trim().equals("")) {
             s.setCommune(null);
         } else {

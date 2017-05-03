@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -267,125 +268,127 @@ public class DonneeFace implements Serializable {
 
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String id = params.get("id");
-        System.err.println("identifiant = "+id);
         Donnee s = (new GestionDonnees()).getDonnee(id);
-        this.id = s.getId().toString();
-        this.intitule = s.getIntitule();
-        this.idtable = s.getIdtable();
-        this.nomtable = s.getNomtable();
-        this.resume = s.getResume();
-        this.idunique = s.getIdunique();
-        if (s.getCattheme1() != null) {
-            this.cattheme1 = s.getCattheme1().getId().toString();
-        }
-        if (s.getCattheme2() != null) {
-            this.cattheme2 = s.getCattheme2().getId().toString();
-        }
-        if (s.getCattheme3() != null) {
-            this.cattheme3 = s.getCattheme3().getId().toString();
-        }
-        if (s.getDepartement() != null) {
-            this.departement = s.getDepartement().getId().toString();
-        }
-        if (s.getRegion() != null) {
-            this.region = s.getRegion().getId().toString();
-        }
-        if (s.getCommune() != null) {
-            this.commune = s.getCommune().getNom();
-        }
+        if (Objects.isNull(s)) {
+            viderformulaire();
+        } else {
+            this.id = s.getId().toString();
+            this.intitule = s.getIntitule();
+            this.idtable = s.getIdtable();
+            this.nomtable = s.getNomtable();
+            this.resume = s.getResume();
+            this.idunique = s.getIdunique();
+            if (s.getCattheme1() != null) {
+                this.cattheme1 = s.getCattheme1().getId().toString();
+            }
+            if (s.getCattheme2() != null) {
+                this.cattheme2 = s.getCattheme2().getId().toString();
+            }
+            if (s.getCattheme3() != null) {
+                this.cattheme3 = s.getCattheme3().getId().toString();
+            }
+            if (s.getDepartement() != null) {
+                this.departement = s.getDepartement().getId().toString();
+            }
+            if (s.getRegion() != null) {
+                this.region = s.getRegion().getId().toString();
+            }
+            if (s.getCommune() != null) {
+                this.commune = s.getCommune().getNom();
+            }
 
-        this.latn = s.getLatn();
-        this.lats = s.getLats();
-        this.late = s.getLate();
-        this.lato = s.getLato();
-        if (s.getDatecreation() == null) {
-            this.datecreation = new Date();
-        } else {
-            this.datecreation = s.getDatecreation();
-        }
-        if (s.getDatepublication() == null) {
-            this.datepublication = new Date();
-        } else {
-            this.datepublication = s.getDatepublication();
-        }
-        if (s.getDatedebutpublication() == null) {
-            this.datedebutpublication = new Date();
-        } else {
-            this.datedebutpublication = s.getDatedebutpublication();
-        }
-        if (s.getDatederniererevision() == null) {
-            this.datederniererevision = new Date();
-        } else {
-            this.datederniererevision = s.getDatederniererevision();
-        }
-        this.etenduemin = s.getEtenduemin();
-        this.etenduemax = s.getEtenduemax();
-        this.genealogieressource = s.getGenealogieressource();
-        this.motscle = s.getMotscle();
-        this.adresseinternet = s.getAdresseinternet();
-        this.nominternet = s.getNominternet();
-        this.adressevisualisation = s.getAdressevisualisation();
-        this.nomvisualisation = s.getNomvisualisation();
-        this.adressetelechargement = s.getAdressetelechargement();
-        this.nomtelechargement = s.getNomtelechargement();
-        this.limiteutilisation = s.getLimiteutilisation();
-        this.referencetemporelle = s.getReferencetemporelle();
-        this.echelle = s.getEchelle();
-        this.resolution = s.getResolution();
-        this.titrespec = s.getTitrespec();
-        if (s.getContraintelegale() != null) {
-            this.contraintelegale = s.getContraintelegale().getId().toString();
-        }
-        if (s.getCoherencetopologique() != null) {
-            this.coherencetopologique = s.getCoherencetopologique().getId().toString();
-        }
-        if (s.getConditionacces() != null) {
-            this.conditionacces = s.getConditionacces().getId().toString();
-        }
-        if (s.getAutrecontact() != null) {
-            this.autrecontact = s.getAutrecontact().getId().toString();
-        }
-        if (s.getLanguemetadonnee() != null) {
-            this.languemetadonnee = s.getLanguemetadonnee().getId();
-        }
-        if (s.getRepresentationspatiale() != null) {
-            this.representationspatiale = s.getRepresentationspatiale().getId().toString();
-        }
-        if (s.getContactmetadonnee() != null) {
-            this.contactmetadonnee = s.getContactmetadonnee().getId().toString();
-        }
-        if (s.getResponsableressource() != null) {
-            this.responsableressource = s.getResponsableressource().getId().toString();
-        }
-        if (s.getContraintesecurite() != null) {
-            this.contraintesecurite = s.getContraintesecurite().getId().toString();
-        }
-        if (s.getThemeinspire() != null) {
-            this.themeinspire = s.getThemeinspire().getId().toString();
-        }
-        if (s.getRestrictionsinspire() != null) {
-            this.restrictionsinspire = s.getRestrictionsinspire().getId().toString();
-        }
-        if (s.getTyperessource() != null) {
-            this.typeressource = s.getTyperessource().getId().toString();
-        }
-        if (s.getJeucaractere() != null) {
-            this.jeucaractere = s.getJeucaractere().getId().toString();
-        }
-        if (s.getLanguedescription() != null) {
-            this.languedescription = s.getLanguedescription().getId();
-        }
-        if (s.getRessourceconforme() != null) {
-            this.ressourceconforme = s.getRessourceconforme().getId().toString();
-        }
+            this.latn = s.getLatn();
+            this.lats = s.getLats();
+            this.late = s.getLate();
+            this.lato = s.getLato();
+            if (s.getDatecreation() == null) {
+                this.datecreation = new Date();
+            } else {
+                this.datecreation = s.getDatecreation();
+            }
+            if (s.getDatepublication() == null) {
+                this.datepublication = new Date();
+            } else {
+                this.datepublication = s.getDatepublication();
+            }
+            if (s.getDatedebutpublication() == null) {
+                this.datedebutpublication = new Date();
+            } else {
+                this.datedebutpublication = s.getDatedebutpublication();
+            }
+            if (s.getDatederniererevision() == null) {
+                this.datederniererevision = new Date();
+            } else {
+                this.datederniererevision = s.getDatederniererevision();
+            }
+            this.etenduemin = s.getEtenduemin();
+            this.etenduemax = s.getEtenduemax();
+            this.genealogieressource = s.getGenealogieressource();
+            this.motscle = s.getMotscle();
+            this.adresseinternet = s.getAdresseinternet();
+            this.nominternet = s.getNominternet();
+            this.adressevisualisation = s.getAdressevisualisation();
+            this.nomvisualisation = s.getNomvisualisation();
+            this.adressetelechargement = s.getAdressetelechargement();
+            this.nomtelechargement = s.getNomtelechargement();
+            this.limiteutilisation = s.getLimiteutilisation();
+            this.referencetemporelle = s.getReferencetemporelle();
+            this.echelle = s.getEchelle();
+            this.resolution = s.getResolution();
+            this.titrespec = s.getTitrespec();
+            if (s.getContraintelegale() != null) {
+                this.contraintelegale = s.getContraintelegale().getId().toString();
+            }
+            if (s.getCoherencetopologique() != null) {
+                this.coherencetopologique = s.getCoherencetopologique().getId().toString();
+            }
+            if (s.getConditionacces() != null) {
+                this.conditionacces = s.getConditionacces().getId().toString();
+            }
+            if (s.getAutrecontact() != null) {
+                this.autrecontact = s.getAutrecontact().getId().toString();
+            }
+            if (s.getLanguemetadonnee() != null) {
+                this.languemetadonnee = s.getLanguemetadonnee().getId();
+            }
+            if (s.getRepresentationspatiale() != null) {
+                this.representationspatiale = s.getRepresentationspatiale().getId().toString();
+            }
+            if (s.getContactmetadonnee() != null) {
+                this.contactmetadonnee = s.getContactmetadonnee().getId().toString();
+            }
+            if (s.getResponsableressource() != null) {
+                this.responsableressource = s.getResponsableressource().getId().toString();
+            }
+            if (s.getContraintesecurite() != null) {
+                this.contraintesecurite = s.getContraintesecurite().getId().toString();
+            }
+            if (s.getThemeinspire() != null) {
+                this.themeinspire = s.getThemeinspire().getId().toString();
+            }
+            if (s.getRestrictionsinspire() != null) {
+                this.restrictionsinspire = s.getRestrictionsinspire().getId().toString();
+            }
+            if (s.getTyperessource() != null) {
+                this.typeressource = s.getTyperessource().getId().toString();
+            }
+            if (s.getJeucaractere() != null) {
+                this.jeucaractere = s.getJeucaractere().getId().toString();
+            }
+            if (s.getLanguedescription() != null) {
+                this.languedescription = s.getLanguedescription().getId();
+            }
+            if (s.getRessourceconforme() != null) {
+                this.ressourceconforme = s.getRessourceconforme().getId().toString();
+            }
 
-        if (s.getServeur() != null) {
-            this.serveur = s.getServeur().getId().toString();
+            if (s.getServeur() != null) {
+                this.serveur = s.getServeur().getId().toString();
+            }
+            if (s.getRefcoordonnees() != null) {
+                this.refcoordonnee = s.getRefcoordonnees().getId().toString();
+            }
         }
-        if (s.getRefcoordonnees() != null) {
-            this.refcoordonnee = s.getRefcoordonnees().getId().toString();
-        }
-
     }
 
     public List<Serveur> getServeurs() {
@@ -907,7 +910,6 @@ public class DonneeFace implements Serializable {
 
     public void setValeursfiltres(List<Donnee> valeursfiltres) {
         this.valeursfiltres = valeursfiltres;
-        System.err.println(this.valeursfiltres);
     }
 
 }
