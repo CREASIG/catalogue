@@ -18,6 +18,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.creasig.inspire.CategorieISO;
 import org.creasig.inspire.CoherenceTopologique;
+import org.creasig.inspire.Colonnes;
 import org.creasig.inspire.Communes;
 import org.creasig.inspire.ConditionUtilisation;
 import org.creasig.inspire.Contacts;
@@ -102,9 +103,11 @@ public class DonneeFace implements Serializable {
     private String serveur;
     private String refcoordonnee;
     private List<Donnee> valeursfiltres;
+    private List<Colonnes> listecolonnes;
 
     public DonneeFace() {
         valeursfiltres = new ArrayList<>();
+        listecolonnes = new ArrayList<>();
     }
 
     public void modifier() {
@@ -190,6 +193,10 @@ public class DonneeFace implements Serializable {
         return liste;
     }
 
+    public List<Colonnes> getColonnes() {
+        return listecolonnes;
+    }
+
     public void viderformulaire() {
         FacesContext context = FacesContext.getCurrentInstance();
         ResourceBundle bundle = context.getApplication().getResourceBundle(context, "msg");
@@ -250,6 +257,7 @@ public class DonneeFace implements Serializable {
         ressourceconforme = "";
         serveur = "";
         refcoordonnee = "";
+        listecolonnes.clear();
     }
 
     public String supprimer() {
@@ -388,6 +396,10 @@ public class DonneeFace implements Serializable {
             }
             if (s.getRefcoordonnees() != null) {
                 this.refcoordonnee = s.getRefcoordonnees().getId().toString();
+            }
+            if (!Objects.isNull(s.getColonnes())) {
+                this.listecolonnes.clear();
+                this.listecolonnes.addAll( s.getColonnes());
             }
         }
     }
