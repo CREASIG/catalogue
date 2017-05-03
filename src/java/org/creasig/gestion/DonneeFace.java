@@ -41,6 +41,7 @@ import org.creasig.inspire.TypeRessource;
  */
 @ManagedBean
 @SessionScoped
+
 public class DonneeFace implements Serializable {
 
     private static final long serialVersionUID = 1L;

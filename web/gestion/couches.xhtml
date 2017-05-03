@@ -13,7 +13,7 @@
         <div class="contenu">
 
             <h:form id="formtableau">
-                <p:dataTable  id="tableau" var="donnee" value="#{donneeFace.donnees}" filteredValue="#{donneeFace.valeursfiltres}" paginator="true" rows="30" sortBy="${donneeFace.intitule}" widgetVar="vartableau">
+                <p:dataTable id="tableau" var="donnee" value="#{donneeFace.donnees}" filteredValue="#{donneeFace.valeursfiltres}" paginator="true" rows="30" sortBy="${donneeFace.intitule}" widgetVar="vartableau">
                     <p:column headerText="id" sortBy="#{donnee.id}" filterBy="#{donnee.id}" rendered="false">
                         <h:outputText value="${donnee.id}" id="globalFilter" />
                     </p:column>
@@ -26,7 +26,7 @@
                     <p:column headerText="#{msg['serveur']}" sortBy="${donnee.serveur.nom}" filterBy="${donnee.serveur.nom}">
                         <f:facet name="filter">
                             <p:selectOneMenu label="Filtrer par" onchange="PF('vartableau').filter()" panelStyle="width:125px">
-                                <f:selectItem itemLabel="Filtrer par" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Filtrer par" itemValue="#{null}" />
                                 <f:selectItems value="#{donneeFace.nomserveurs}" />
                             </p:selectOneMenu>
                         </f:facet>
@@ -48,11 +48,11 @@
                         </p:commandButton>
                     </p:column>
                     <p:column headerText="">
-                        <p:commandButton value="#{msg['supprimer']}" update=":formtableau:tableau" actionListener="#{donneeFace.supprimer}" styleClass="ui-priority-primary" >
+                        <p:commandButton value="#{msg['supprimer']}" update="@form" actionListener="#{donneeFace.supprimer}" styleClass="ui-priority-primary" >
                             <f:param name="id" value="#{donnee.id}" />
                             <p:confirm header="#{msg['confirmation']}" message="#{msg['estsur']}" icon="ui-icon-alert"/>
                         </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                             <p:commandButton value="#{msg['oui']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                             <p:commandButton value="#{msg['non']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-check" />
                         </p:confirmDialog>

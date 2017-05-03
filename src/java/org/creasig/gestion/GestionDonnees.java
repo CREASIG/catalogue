@@ -218,7 +218,8 @@ public class GestionDonnees {
 
     public void supprimer(String id) {
         transac.begin();
-        Contacts s = (Contacts) em.createNamedQuery("Donnee.findById").setParameter("id", Integer.decode(id)).getResultList().get(0);
+        System.err.println(id);
+        Donnee s = (Donnee) em.createNamedQuery("Donnee.findById").setParameter("id", Integer.decode(id)).getResultList().get(0);
         em.remove(s);
         transac.commit();
     }
