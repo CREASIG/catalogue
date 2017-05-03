@@ -13,7 +13,7 @@
         <div class="contenu">
 
             <h:form id="formtableau">
-                <p:dataTable id="tableau" var="donnee" value="#{donneeFace.donnees}" filteredValue="#{donneeFace.valeursfiltres}" paginator="true" rows="30" sortBy="${donneeFace.intitule}" widgetVar="vartableau">
+                <p:dataTable id="tableau" var="donnee" value="#{donneeFace.donnees}"  paginator="true" rows="30" sortBy="${donneeFace.intitule}" widgetVar="vartableau">
                     <p:column headerText="id" sortBy="#{donnee.id}" filterBy="#{donnee.id}" rendered="false">
                         <h:outputText value="${donnee.id}" id="globalFilter" />
                     </p:column>
@@ -26,7 +26,7 @@
                     <p:column headerText="#{msg['serveur']}" sortBy="${donnee.serveur.nom}" filterBy="${donnee.serveur.nom}">
                         <f:facet name="filter">
                             <p:selectOneMenu label="Filtrer par" onchange="PF('vartableau').filter()" panelStyle="width:125px">
-                                <f:selectItem itemLabel="Filtrer par" itemValue="#{null}" />
+                                <f:selectItem itemLabel="Tout afficher" itemValue="#{null}" />
                                 <f:selectItems value="#{donneeFace.nomserveurs}" />
                             </p:selectOneMenu>
                         </f:facet>
@@ -43,7 +43,7 @@
                     </p:column>
 
                     <p:column headerText="">
-                        <p:commandButton value="#{msg['modifier']}" oncomplete="PF('modifier').show();" update=":formulaire" action="#{donneeFace.chargerserveur}" styleClass="ui-priority-primary" >
+                        <p:commandButton value="#{msg['modifier']}" oncomplete="PF('modifier').show();" update="@form" action="#{donneeFace.chargerserveur}" styleClass="ui-priority-primary" >
                             <f:param name="id" value="#{donnee.id}" />
                         </p:commandButton>
                     </p:column>
