@@ -102,9 +102,9 @@
                                     Colonnes
                                 </p:column>
                                 <p:column>
-                                    <p:dataTable id="tableaucolonnes" var="colonnes" value="#{donneeFace.colonnes}"  paginator="true" rows="30" widgetVar="varcolonnes">
-                                        <p:column headerText="id">
-                                            <h:outputText value="${colonnes.id}" id="globalFilter" rendered="false"/>
+                                    <p:dataTable id="tableaucolonnes" var="colonnes" value="#{donneeFace.colonnes}"  paginator="true" rows="30" widgetVar="varcolonnes" disabledSelection="true" paginatorAlwaysVisible="false">
+                                        <p:column headerText="id" rendered="false">
+                                            <h:outputText value="${colonnes.id}" id="globalFilter" />
                                         </p:column>
                                         <p:column headerText="Nom">
                                             <h:outputText value="${colonnes.nom}" />
@@ -113,10 +113,10 @@
                                             <h:outputText value="${colonnes.type}" />
                                         </p:column>
                                         <p:column headerText="Description">
-                                            <h:inputTextarea value="${colonnes.description}" />
+                                            <h:inputTextarea value="${colonnes.description}" rows="4" cols="40"/>
                                         </p:column>
                                         <p:column headerText="">
-                                            <p:commandButton value="#{msg['modifier']}" oncomplete="PF('modifier').show();" update="@form" action="#{donneeFace.chargerserveur}" styleClass="ui-priority-primary" >
+                                            <p:commandButton value="#{msg['modifier']}" action="#{donneeFace.modifierColonne(colonnes.id,colonnes.description)}" styleClass="ui-priority-primary" >
                                                 <f:param name="id" value="#{donnee.id}" />
                                             </p:commandButton>
                                         </p:column>

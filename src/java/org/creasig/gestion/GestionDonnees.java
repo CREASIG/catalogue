@@ -223,6 +223,15 @@ public class GestionDonnees {
         em.remove(s);
         transac.commit();
     }
+    
+    public void modifierColonne(String id, String description){
+        transac.begin();
+        Colonnes s = (Colonnes) em.createNamedQuery("Colonnes.findById").setParameter("id", Integer.decode(id)).getResultList().get(0);
+        s.setDescription(description);
+        em.persist(s);
+        transac.commit();
+        
+    }
 
     public Donnee getDonnee(String id) {
         List<Donnee> liste = em.createNamedQuery("Donnee.findById").setParameter("id", Integer.decode(id)).getResultList();

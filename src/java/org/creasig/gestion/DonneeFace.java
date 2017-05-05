@@ -169,6 +169,10 @@ public class DonneeFace implements Serializable {
 
         (new GestionDonnees()).modifier(s);
     }
+    
+    public void modifierColonne(String id, String description){
+        (new GestionDonnees()).modifierColonne(id,description);
+    }
 
     public List<Donnee> getDonnees() {
         List<Donnee> liste = (new GestionDonnees()).getDonnees();
