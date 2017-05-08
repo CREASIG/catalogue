@@ -52,7 +52,7 @@ public class RechercheResource {
     }
 
     @GET
-    @Path("{id}")
+    @Path("/id/{id}")
     public String getContact(@PathParam("id") String id) {
         try {
             List<Donnee> listedonnees = em.createNamedQuery("Donnee.findById").setParameter("id", Integer.parseUnsignedInt(id)).getResultList();
